@@ -30,3 +30,17 @@ postgresql:
     secretKeys:
       userPasswordKey: postgres-password
       adminPasswordKey: postgres-password
+  primary:
+    containerSecurityContext:
+      # Ubuntu 26.04 / AppArmor 5: containerd's default profile blocks Postgres processes
+      # signalling each other ("could not signal for checkpoint: Permission denied")
+      appArmorProfile:
+        type: Unconfined
+    # default probe also waits for Bitnami marker files the official postgres image never creates
+    customReadinessProbe:
+      exec:
+        command: [sh, -c, exec pg_isready -U authentik -d dbname=authentik -h 127.0.0.1 -p 5432]
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
