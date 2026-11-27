@@ -1,0 +1,22 @@
+global:
+  # hostname ArgoCD uses for its UI links and the ingress
+  domain: argocd.devbox
+
+configs:
+  cm:
+    # chart defaults to https://<domain>; no TLS yet, so http
+    url: http://argocd.devbox
+    # how often ArgoCD checks git for changes
+    timeout.reconciliation: 180s
+  params:
+    # plain HTTP behind the ingress; ingress has no TLS yet
+    server.insecure: true
+  rbac:
+    # logged-in users without a role can only look
+    policy.default: role:readonly
+
+server:
+  ingress:
+    enabled: true
+    # empty = cluster's default ingress class (Traefik on k3s); set it in values-k8s.yaml if needed
+    ingressClassName: ""
