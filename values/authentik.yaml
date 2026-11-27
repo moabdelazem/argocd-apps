@@ -1,0 +1,32 @@
+# authentik chart values: https://artifacthub.io/packages/helm/goauthentik/authentik
+# Secrets come from the "authentik-secrets" Secret made by scripts/create-authentik-secret.sh
+# (never commit them: this repo is public).
+global:
+  env:
+    - name: AUTHENTIK_SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: authentik-secrets
+          key: secret-key
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-secrets
+          key: postgres-password
+
+server:
+  ingress:
+    enabled: true
+    # empty = cluster's default ingress class (Traefik on k3s)
+    ingressClassName: ""
+    hosts:
+      - authentik.devbox
+
+# bundled Postgres; stores data on the cluster's default StorageClass
+postgresql:
+  enabled: true
+  auth:
+    existingSecret: authentik-secrets
+    secretKeys:
+      userPasswordKey: postgres-password
+      adminPasswordKey: postgres-password

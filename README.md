@@ -64,10 +64,13 @@ scripts/install-argocd.sh   # one-time bootstrap
 ## Bootstrap
 
 ```bash
+scripts/create-authentik-secret.sh   # once per cluster: authentik's secret key + DB password
 scripts/install-argocd.sh
 ```
 
-It Helm-installs ArgoCD with `values/argocd.yaml`, then applies `apps/root.yaml`. From there ArgoCD manages everything, itself included. Open http://argocd.devbox and log in as `admin` with the password the script prints.
+Secrets are created on the cluster by scripts, never committed (this repo is public).
+
+`install-argocd.sh` Helm-installs ArgoCD with `values/argocd.yaml`, then applies `apps/root.yaml`. From there ArgoCD manages everything, itself included. Open http://argocd.devbox and log in as `admin` with the password the script prints.
 
 ## Branches
 
