@@ -1,0 +1,13 @@
+# k3s CoreDNS extra rules: lets pods resolve *.devbox to Traefik, same as your browser does.
+# Needed so ArgoCD can reach authentik (http://authentik.devbox) for SSO.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  devbox.override: |
+    rewrite stop {
+      name regex (.*)\.devbox traefik.kube-system.svc.cluster.local
+      answer auto
+    }
